@@ -1,11 +1,9 @@
 ---
 layout: post
 title: "List accessing in Javascript"
-categories: javascript clojure clojurescript
+categories: javascript clojure clojurescript arrays
 ---
 
-
-### An attempt to make JavaScript array accessing more friendly.
 
 Javascript's syntax for accessing specific indexes in arrays is simple and effective however it has meant that the language has developed without forming a concise way of immutably accessing an array.
 
