@@ -1,0 +1,13 @@
+
+.highlighter-rouge {
+  .err { background-color: initial;}
+
+  &.language-bash {
+    color: white;
+
+    pre, code {
+      background-color: black!important;
+    }
+    .nb { color: darken(white, 30%); }
+  }
+}

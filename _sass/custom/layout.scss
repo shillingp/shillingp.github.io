@@ -1,0 +1,56 @@
+
+
+.post-list {
+  li {
+    border-bottom: 1px solid $table-border-color;
+
+    aside {
+      float: right;
+      position: relative;
+    }
+
+    a {
+      text-decoration: none;
+      display: block;
+      color: #333;
+
+      transition: all 0.15s ease;
+
+      h2:hover {
+        color: #0077b3;
+      }
+    }
+  }
+}
+
+
+
+.page-heading {
+  border-bottom: 2px solid $grey-color-light;
+  margin-bottom: 40px;
+}
+
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  width: 80%;
+  margin: 10px auto;
+
+  th {
+    font-weight: 600;
+  }
+
+  th, td {
+    padding: 6px 13px;
+    border: 1px solid $table-border-color;
+  }
+
+  tr {
+    background-color: #fff;
+    border-top: 1px solid #c6cbd1;
+  }
+
+  tr:nth-child(2n) {
+    background-color: $table-odd-background-color;
+  }
+}

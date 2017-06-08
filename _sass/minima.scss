@@ -1,6 +1,10 @@
 @charset "utf-8";
 
 // Define defaults for each variable.
+// Custom variables
+$table-border-color:         #dfe2e5!default;
+$table-odd-background-color: #f9f9f9!default;
+
 
 $base-font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !default;
 $base-font-size:   16px !default;
@@ -46,4 +50,4 @@ $on-laptop:        800px !default;
         "minima/layout",
         "minima/syntax-highlighting";
 
-@import "./custom";
+@import "./custom/main";

@@ -5,7 +5,7 @@ categories: javascript clojure clojurescript arrays
 ---
 
 
-Javascript's syntax for accessing specific indexes in arrays is simple and effective however it has meant that the language has developed without forming a concise way of immutably accessing an array.
+Javascript's syntax for accessing specific indexes in arrays is simple and effective however it has meant that the language has developed without forming a pragmatic approach to accessing an array.
 
 ```js
 const testList = ["a", "b", "c", "d", "e"];
@@ -17,7 +17,7 @@ testList.slice(-1)[0]         // last element
 testList.slice(1) // get rest of element
 ```
 
-This is clearly not concise and it is not obvious to beginners why we use certain approaches for some things and other approaches for a seemingly identical task. Of coarse as you learn about mutability you discover why we dont use `.shift()` or `.pop()` to get the first or last elements.
+This is clearly not concise and it is not obvious to beginners why we use certain approaches for some things and other approaches for a seemingly identical task. Of course as you learn about mutability you discover why we dont use `.shift()` or `.pop()` to get the first or last elements.
 
 In Clojure(script) there is no *extra* syntax for accessing any of our data structures. Therefore the default way to access an element in a list or array is to use a function `nth` and provide the list and the index, as soon as you begin to use one side-effect free function it becomes much more straightforward and clear what you are really asking for. Then sprinkle in a few extra helpful aliases `first`, `second` and `last` that use `nth` with fixed parameters.
 
