@@ -1,11 +1,10 @@
 ---
 layout: post
 title: "Undo and Redo in Clojure"
+categories: clojure clojurescript history
 ---
 
-In ClojureScript we store all of our app state in a single source of data, we also know that everything is data.
-
-As we have a single source of truth it lends itself well to 'time travelling' or having history associated with it. This is because we know that no other vital data will be 'left behind' if we jump back and forth between history states.
+In ClojureScript we store all of our app state in a single source of data. As we have a single source of truth it lends itself well to 'time travelling' or having history associated with it. This is because we know that no other vital data will be 'left behind' if we jump back and forth between history states.
 
 To visualise the problem at hand open up a new tab in your browser, then search for something, anything. You will know that the back button can now be pressed to take you back to the previous page and when you press it the forward button will be available. However now if you click a link you will see that the forward button is not available anymore, the "forward history" has been removed, this is because things get unclear if you retain it.
 
@@ -17,20 +16,20 @@ To implement an undo/redo history. We need 3 things.
   3. A single future atom or redo stack
 
 |variable   |initial|concat "a" |concat "b"   |concat "c"         |
-|-----------------------------------------------------------------|
+|-----------|-------|-----------|-------------|-------------------|
 |app-state  |""     |"a"        |"ab"         |"abc"              |
 |app-history|[""]   |["" "a"]   |["" "a" "ab"]|["" "a" "ab" "abc"]|
 |app-future |[]     |[]         |[]           |[]                 |
 
 
 |variable   |initial            |undo         |undo         |
-|-----------------------------------------------------------|
+|-----------|-------------------|-------------|-------------|
 |app-state  |"abc"              |"ab"         |"a"          |
 |app-history|["" "a" "ab" "abc"]|["" "a" "ab"]|["" "a"]     |
 |app-future |[]                 |["abc"]      |["abc" "ab"] |
 
 |variable   |initial      |redo         |append "d"         |
-|-----------------------------------------------------------|
+|-----------|-------------|-------------|-------------------|
 |app-state  |"a"          |"ab"         |"abd"              |
 |app-history|["" "a"]     |["" "a" "ab"]|["" "a" "ab" "abd"]|
 |app-future |["abc" "ab"] |["abc"]      |[]                 |
@@ -65,7 +64,7 @@ Here you will see that it takes 3 steps to commit an undo request.
 
 
 |variable   |initial      |step 1.      | step 2. | step 3. |
-|-----------------------------------------------------------|
+|-----------|-------------|-------------|-------------------|
 |app-state  |"ab"         |"ab"         |"ab"     |"a"      |
 |app-history|["" "a" "ab"]|["" "a" "ab"]|["" "a"] |["" "a"] |
 |app-future |[]           |["ab"]       |["ab"]   |["ab"]   |
@@ -86,7 +85,7 @@ Now we need to do the opposite, we need to make a redo step. Which is almost the
 To commit a redo request we again need to take 3 steps.
 
 |variable   |initial      |step 1.      | step 2.     |step 3.      |
-|-------------------------------------------------------------------|
+|-----------|-------------|-------------|-------------|-------------|
 |app-state  |"a"          |"a"          |"a"          |"ab"         |
 |app-history|["" "a"]     |["" "a" "ab"]|["" "a" "ab"]|["" "a" "ab"]|
 |app-future |["abc" "ab"] |["abc" "ab"] |["abc"]      |["abc"]      |
@@ -150,9 +149,11 @@ Great it looks like we are all done, everything is working. But just to be sure 
 ```
 Perfect. This has got limitations, the entire state of the app and therefore the app itself must rely on a single global atomic store. This has its benefits and its fair share of problems. I will direct you to Roman Liutikov's Medium post [Single atom state tree buzzword explained](https://medium.com/@roman01la/single-atom-state-tree-buzzword-explained-4935d265343) which as the name suggest explains in more detail about global app state.
 
-Here is the full code in case you want to use it. If you are interested I have made a naive [multi store history](https://gist.github.com/shillingp/3feb15212968d0ff6ac1a060c4544dc2).
+Here is the full code in case you want to use it. If you are interested I have made a naive [multi atom history](https://gist.github.com/shillingp/3feb15212968d0ff6ac1a060c4544dc2).
 
 ```clj
+(def app-state (atom {}))
+
 (def app-history (atom [@app-state]))
 (def app-future  (atom []))
 
@@ -186,8 +187,6 @@ Here is the full code in case you want to use it. If you are interested I have m
   (reset! app-future [])
   (swap! app-history conj new-state))
 
-
-(def app-state (atom {}))
 
 (add-watch app-state :history
   (fn [_ _ _ new-state]

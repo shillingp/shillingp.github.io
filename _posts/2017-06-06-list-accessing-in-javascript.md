@@ -4,7 +4,6 @@ title: "List accessing in Javascript"
 categories: javascript clojure clojurescript arrays
 ---
 
-
 Javascript's syntax for accessing specific indexes in arrays is simple and effective however it has meant that the language has developed without forming a pragmatic approach to accessing an array.
 
 ```js
