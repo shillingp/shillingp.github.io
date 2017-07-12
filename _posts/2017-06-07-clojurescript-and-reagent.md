@@ -6,7 +6,7 @@ categories: clojurescript reagent react
 
 You may at this point be wondering, WTF is Reagent.
 
-You may or may not know about JSX which is the pragma that React uses to convert code into virtual DOM. In essence the line `<p>Hello<p>` will be compiled to `h("div", null, "Hello World")` if you would like to learn more about it Jason Miller's talk [Preact: Into the void 0](https://www.youtube.com/watch?v=LY6y3HbDVmg).
+You may or may not know about JSX which is the pragma that React uses to convert code into virtual DOM. In essence the line `<p>Hello World<p>` will be compiled to `h("div", null, "Hello World")` if you would like to learn more about it Jason Miller's talk [Preact: Into the void 0](https://www.youtube.com/watch?v=LY6y3HbDVmg).
 
 ```html
 function TextInput() {

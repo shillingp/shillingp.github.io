@@ -4,7 +4,7 @@ title: "Undo and Redo in Clojure"
 categories: clojure clojurescript history
 ---
 
-In ClojureScript we store all of our app state in a single source of data. As we have a single source of truth it lends itself well to 'time travelling' or having history associated with it. This is because we know that no other vital data will be 'left behind' if we jump back and forth between history states.
+In ClojureScript we store all of our app state in a single source of data. As we have a single source of truth it lends itself well to 'time travelling' or having history associated with it. This is because we know that no other vital data will be 'left behind' if we jump back and forth between history states because there is no other vital data if you have only one data source.
 
 To visualise the problem at hand open up a new tab in your browser, then search for something, anything. You will know that the back button can now be pressed to take you back to the previous page and when you press it the forward button will be available. However now if you click a link you will see that the forward button is not available anymore, the "forward history" has been removed, this is because things get unclear if you retain it.
 
@@ -14,6 +14,7 @@ To implement an undo/redo history. We need 3 things.
   1. A single source of application state
   2. A single history atom or undo stack
   3. A single future atom or redo stack
+
 
 |variable   |initial|concat "a" |concat "b"   |concat "c"         |
 |-----------|-------|-----------|-------------|-------------------|
@@ -138,14 +139,14 @@ Now when we mutate `app-state` not only will the current state be changed but th
 Great it looks like we are all done, everything is working. But just to be sure lets check whats going on behind the scenes when we change `app-state`.
 
 ```clj
-;;                              app-state   app-history   app-future
-(swap! app-state str "a")   ;; -> "a"    ["" "a"]            []
-(swap! app-state str "b")   ;; -> "ab"   ["" "a" "ab"]       []
-(swap! app-state str "c")   ;; -> "abc"  ["" "a" "ab" "abc"] []
-(do-undo)                   ;; -> "ab"   ["" "a" "ab"]       ["abc"]
-(do-undo)                   ;; -> "a"    ["" "a"]            ["abc" "ab"]
-(do-redo)                   ;; -> "ab"   ["" "a" "ab"]       ["abc"]
-(swap! app-state str "d")   ;; -> "abd"  ["" "a" "ab" "abd"] []
+;;                              app-state   app-history     app-future
+(swap! app-state str "a")   ;; -> "a"    ["" "a"]             []
+(swap! app-state str "b")   ;; -> "ab"   ["" "a" "ab"]        []
+(swap! app-state str "c")   ;; -> "abc"  ["" "a" "ab" "abc"]  []
+(do-undo)                   ;; -> "ab"   ["" "a" "ab"]        ["abc"]
+(do-undo)                   ;; -> "a"    ["" "a"]             ["abc" "ab"]
+(do-redo)                   ;; -> "ab"   ["" "a" "ab"]        ["abc"]
+(swap! app-state str "d")   ;; -> "abd"  ["" "a" "ab" "abd"]  []
 ```
 Perfect. This has got limitations, the entire state of the app and therefore the app itself must rely on a single global atomic store. This has its benefits and its fair share of problems. I will direct you to Roman Liutikov's Medium post [Single atom state tree buzzword explained](https://medium.com/@roman01la/single-atom-state-tree-buzzword-explained-4935d265343) which as the name suggest explains in more detail about global app state.
 
@@ -159,24 +160,29 @@ Here is the full code in case you want to use it. If you are interested I have m
 
 
 (defn clear-all-state []
+  "hard reset both history and future"
   (reset! app-history [])
   (reset! app-future  []))
 
 
 (defn can-undo []
+  "is the app-history large enough to step back"
   (> (count @app-history) 1))
 
 (defn can-redo []
+  "is the app-future large enough to step forward"
   (> (count @app-future) 0))
 
 
 (defn do-undo []
+  "step back in time to the previous state"
   (when (can-undo)
     (swap! app-future conj (last @app-history))
     (swap! app-history pop)
     (reset! app-state (last @app-history))))
 
 (defn do-redo []
+  "step forward in time to the next state"
   (when (can-redo)
     (swap! app-history conj (last @app-future))
     (swap! app-future pop)
@@ -184,12 +190,14 @@ Here is the full code in case you want to use it. If you are interested I have m
 
 
 (defn push-state-change [new-state]
+  "grow the history stack"
   (reset! app-future [])
   (swap! app-history conj new-state))
 
 
 (add-watch app-state :history
   (fn [_ _ _ new-state]
+    "watch the new state changes and push to stack"
     (when-not (= new-state (last @app-history))
       (push-state-change new-state))))
 ```

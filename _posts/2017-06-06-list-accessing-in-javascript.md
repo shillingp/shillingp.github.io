@@ -60,14 +60,10 @@ rest(testList)      // ["b", "c", "d", "e"]
 nth(testList, 3)    // "d"
 ```
 
-Now we can see that this is looking much cleaner that our original Javascript snippet and its looking much more readable. We have approached the problem in a functional way by making a function that is reused, if we needed to be able to return the first and second elements of an array called `pair` it would be simple to extend this method.
+Now we can see that this is looking much cleaner that our original JavaScript snippet and its looking much more readable. We have approached the problem in a functional way by making a function that is reused, if we needed the second to last element, we can use a function called `butLast` it would be simple to extend this method.
 
 ```js
-const pair = nthItems(0, 2)
-pair(["a", "b", "c"])     // => ["a", "b"]
-pair([0, 1, 2, 3, 4])     // => [0, 1]
-
-const lastPair = nthItems(-2)
-lastPair(["a", "b", "c"]) // => ["b", "c"]
-lastPair([0, 1, 2, 3, 4]) // => [3, 4]
+const butLast = nthItems(-2, -1);
+butLast(["a", "b", "c"])    // => "b"
+butLast([0, 1, 2, 3, 4])    // => 3
 ```
